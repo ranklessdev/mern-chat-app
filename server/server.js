@@ -90,7 +90,7 @@ const server = http.createServer(app);
 // ✅ 2. CORS setup for Socket.io
 const allowedOrigins = [
   "http://localhost:3000", // for local dev
-  "https://YOUR_NETLIFY_SITE_NAME.netlify.app", // 🔴 REPLACE this with your Netlify domain
+  process.env.CLIENT_URL, // 🔴 REPLACE this with your Netlify domain
 ];
 
 const io = new Server(server, {
