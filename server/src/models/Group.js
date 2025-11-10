@@ -10,13 +10,11 @@ const GroupSchema = mongoose.Schema(
         required: true,
       },
     ],
-    // The user who created the group and has administrative privileges
     admin: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true,
     },
-    // Used to show the last message in the chat list without searching the Message collection
     latestMessage: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Message",

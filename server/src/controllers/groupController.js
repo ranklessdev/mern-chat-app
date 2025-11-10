@@ -2,7 +2,6 @@ import Group from "../models/Group.js";
 import User from "../models/User.js";
 import mongoose from "mongoose";
 
-// Helper function to check if the user is the admin
 const checkAdmin = async (groupId, userId, res) => {
   const group = await Group.findById(groupId);
   if (!group) {
@@ -34,10 +33,10 @@ export const createGroup = async (req, res) => {
       name,
       members: Array.from(finalMembers),
       admin: currentUserId,
-      latestMessage: null // Initialize without a message
+      latestMessage: null 
     });
 
-    // Notify users about the new group via socket (will be handled in server.js/socket logic)
+    // not using this for now Notify users about the new group via socket (will be handled in server.js/socket logic)
     const io = req.app.get("io");
     group.members.forEach(memberId => {
         io.to(memberId.toString()).emit("groupUpdated", { type: 'NEW', group });
@@ -50,11 +49,10 @@ export const createGroup = async (req, res) => {
   }
 };
 
-// PUT /api/groups/:groupId/add
 export const addUserToGroup = async (req, res) => {
   try {
     const { groupId } = req.params;
-    const { userIdToAdd } = req.body; // The ID of the user to be added
+    const { userIdToAdd } = req.body; 
     const currentUserId = req.user._id;
 
     const group = await checkAdmin(groupId, currentUserId, res);
@@ -67,7 +65,7 @@ export const addUserToGroup = async (req, res) => {
     group.members.push(userIdToAdd);
     await group.save();
 
-    // Notify the added user and all existing members
+    // -------------------Notify the added user and all existing members 
     const io = req.app.get("io");
     group.members.forEach(memberId => {
         io.to(memberId.toString()).emit("groupUpdated", { type: 'MEMBER_ADDED', group });
@@ -102,7 +100,7 @@ export const removeUserFromGroup = async (req, res) => {
     
     await group.save();
     
-    // Notify the removed user and all remaining members
+    // -------------------Notify the removed user and all remaining members
     const io = req.app.get("io");
     io.to(userIdToRemove).emit("groupUpdated", { type: 'REMOVED', groupId });
     group.members.forEach(memberId => {

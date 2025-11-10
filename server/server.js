@@ -9,10 +9,9 @@ dotenv.config();
 
 const server = http.createServer(app);
 
-// ✅ 1. Allow correct origins
 const allowedOrigins = [
   "http://localhost:5173",
-  process.env.CLIENT_URL, // Netlify site
+  process.env.CLIENT_URL, // for Netlify site
 ];
 
 const io = new Server(server, {
@@ -32,7 +31,9 @@ app.use(
 
 app.set("io", io);
 
-// ✅ 2. Socket events
+
+
+//Socket events
 io.on("connection", (socket) => {
   console.log("🟢 New socket connected:", socket.id);
 

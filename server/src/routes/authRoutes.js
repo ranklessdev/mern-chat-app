@@ -7,10 +7,9 @@ const router = express.Router();
 router.post("/register", registerUser);
 router.post("/login", loginUser);
 
-// Unified route to fetch all chat partners (users and groups)
 router.get("/chats", protect, getAllUsersAndGroups);
 
-// Route to fetch users for group member selection (kept separate for clarity)
-router.get("/users", protect, getAllUsersAndGroups); // Reuse controller for simplicity
+
+router.get("/users", protect, getAllUsersAndGroups);
 
 export default router;

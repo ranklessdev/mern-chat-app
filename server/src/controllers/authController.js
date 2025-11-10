@@ -3,14 +3,12 @@ import User from "../models/User.js";
 import Group from "../models/Group.js"; 
 import bcrypt from "bcryptjs"; 
 
-// Helper function to generate JWT token (assuming this logic exists elsewhere too)
 const generateToken = (userId) => {
   return jwt.sign({ id: userId }, process.env.JWT_SECRET, {
     expiresIn: "7d",
   });
 };
 
-// --- AUTHENTICATION FUNCTIONS ---
 
 export const registerUser = async (req, res) => {
   try {
@@ -23,7 +21,6 @@ export const registerUser = async (req, res) => {
     const existingUser = await User.findOne({ email });
     if (existingUser) return res.status(400).json({ message: "User already exists" });
 
-    // Assuming password hashing logic is available
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
@@ -52,7 +49,6 @@ export const loginUser = async (req, res) => {
 
     if (!user) return res.status(401).json({ message: "Invalid credentials" });
 
-    // Assuming password comparison logic is available
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) return res.status(401).json({ message: "Invalid credentials" });
 
@@ -69,21 +65,18 @@ export const loginUser = async (req, res) => {
 };
 
 
-// --- CHAT LIST FUNCTION (Fix for the SyntaxError) ---
+// --- CHAT LIST FUNCTION
 
 export const getAllUsersAndGroups = async (req, res) => {
   try {
     const currentUserId = req.user._id;
 
-    // 1. Fetch all other users (for DMs)
     const users = await User.find({ _id: { $ne: currentUserId } }).select("_id name email");
     
-    // 2. Fetch all groups the current user is a member of
     const groups = await Group.find({ members: currentUserId })
       .populate("latestMessage")
       .populate("admin", "name email"); 
     
-    // 3. Combine and return
     res.json({ users, groups });
 
   } catch (error) {
